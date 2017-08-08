@@ -22,9 +22,9 @@ zz = accuracy_instance(p, t, batch_size=2)
 
 sess.run(zz)
 
-print p[0].eval()
-print t[0].eval()
+print(p[0].eval())
+print(t[0].eval())
 
-print zz.eval()
+print(zz.eval())
 
-print tf.equal(p,t).eval()
+print(tf.equal(p,t).eval())

@@ -4,7 +4,7 @@ import pytest
 
 import os
 import random
-from Images import get_shuffled_images, time_offset_label, load_transform
+from .Images import get_shuffled_images, time_offset_label, load_transform
 
 class OmniglotGenerator(object):
     """Docstring for OmniglotGenerator"""
@@ -28,9 +28,9 @@ class OmniglotGenerator(object):
         return self
 
     def __next__(self):
-        return self.next()
+        return next(self)
 
-    def next(self):
+    def __next__(self):
         if (self.max_iter is None) or (self.num_iter < self.max_iter):
             self.num_iter += 1
             return (self.num_iter - 1), self.sample(self.nb_samples)
@@ -45,9 +45,9 @@ class OmniglotGenerator(object):
         example_outputs = np.zeros((self.batch_size, nb_samples * self.nb_samples_per_class), dtype=np.float32)     #notice hardcoded np.float32 here and above, change it to something else in tf
 
         for i in range(self.batch_size):
-            labels_and_images = get_shuffled_images(sampled_character_folders, range(nb_samples), nb_samples=self.nb_samples_per_class)
+            labels_and_images = get_shuffled_images(sampled_character_folders, list(range(nb_samples)), nb_samples=self.nb_samples_per_class)
             sequence_length = len(labels_and_images)
-            labels, image_files = zip(*labels_and_images)
+            labels, image_files = list(zip(*labels_and_images))
 
             angles = np.random.uniform(-self.max_rotation, self.max_rotation, size=sequence_length)
             shifts = np.random.uniform(-self.max_shift, self.max_shift, size=sequence_length)

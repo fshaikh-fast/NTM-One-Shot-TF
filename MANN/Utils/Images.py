@@ -20,9 +20,9 @@ def get_shuffled_images(paths, labels, nb_samples=None):
     return images
 
 def time_offset_label(labels_and_images):
-    labels, images = zip(*labels_and_images)
+    labels, images = list(zip(*labels_and_images))
     time_offset_labels = (None,) + labels[:-1]
-    return zip(images, time_offset_labels)
+    return list(zip(images, time_offset_labels))
 
 def load_transform(image_path, angle=0., s=(0,0), size=(20,20)):
     #Load the image

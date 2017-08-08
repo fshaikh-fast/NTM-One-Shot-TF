@@ -30,7 +30,7 @@ def omniglot():
     generator = OmniglotGenerator(data_folder='./data/omniglot', batch_size=batch_size, nb_samples=nb_class, nb_samples_per_class=nb_samples_per_class, max_rotation=0., max_shift=0., max_iter=None)
     output_var, output_var_flatten, params = memory_augmented_neural_network(input_ph, target_ph, batch_size=batch_size, nb_class=nb_class, memory_shape=memory_shape, controller_size=controller_size, input_size=input_size, nb_reads=nb_reads)
 
-    print 'Compiling the Model'
+    print('Compiling the Model')
     
 
     with tf.variable_scope("Weights", reuse=True):
@@ -52,7 +52,7 @@ def omniglot():
     
     #output_var = tf.cast(output_var, tf.int32)
     target_ph_oh = tf.one_hot(target_ph, depth=generator.nb_samples)
-    print 'Output, Target shapes: ',output_var.get_shape().as_list(), target_ph_oh.get_shape().as_list()
+    print('Output, Target shapes: ',output_var.get_shape().as_list(), target_ph_oh.get_shape().as_list())
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(output_var, target_ph_oh), name="cost")
     opt = tf.train.AdamOptimizer(learning_rate=1e-3)
     train_step = opt.minimize(cost, var_list=params)
@@ -61,7 +61,7 @@ def omniglot():
     accuracies = accuracy_instance(tf.argmax(output_var, axis=2), target_ph, batch_size=generator.batch_size)
     sum_out = tf.reduce_sum(tf.reshape(tf.one_hot(tf.argmax(output_var, axis=2), depth=generator.nb_samples), (-1, generator.nb_samples)), axis=0)
 
-    print 'Done'
+    print('Done')
 
     tf.summary.scalar('cost', cost)
     for i in range(generator.nb_samples_per_class):
@@ -77,7 +77,7 @@ def omniglot():
 
     sess.run(tf.global_variables_initializer())
 
-    print 'Training the model'
+    print('Training the model')
 
 
 
@@ -94,18 +94,18 @@ def omniglot():
             temp = sum_out.eval(feed_dict)
             summary = merged.eval(feed_dict)
             train_writer.add_summary(summary, i)
-            print i, ' ',temp
+            print(i, ' ',temp)
             all_scores.append(score)
             scores.append(score)
             accs += acc
             if i>0 and not (i%100):
-                print(accs / 100.0)
-                print('Episode %05d: %.6f' % (i, np.mean(score)))
+                print((accs / 100.0))
+                print(('Episode %05d: %.6f' % (i, np.mean(score))))
                 scores, accs = [], np.zeros(generator.nb_samples_per_class)
 
 
     except KeyboardInterrupt:
-        print time.time() - t0
+        print(time.time() - t0)
         pass
 
 if __name__ == '__main__':
